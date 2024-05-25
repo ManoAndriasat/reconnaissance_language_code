@@ -4,7 +4,6 @@ from math import log2
 import tkinter as tk
 from tkinter import messagebox
 
-history = []
 def on_predict_button_click():
     input_string = input_entry.get()
     
@@ -31,11 +30,9 @@ def on_predict_button_click():
         sardinas_label.config(text=f"Prediction: {predictions[0]}")
         l = [item.replace("'","").strip() for item in l]
         prediction_label.config(text=f"vrai resultat: {est_un_code(l)}")
-        history.append({'l':l,'prediction':predictions[0],'reel':est_un_code(l)})
 
-        label = tk.Label(window, text=history[0], height=2, width=80)
+        label = tk.Label(window, text={'l':l,'prediction':predictions[0],'reel':est_un_code(l)}, height=2, width=80)
         label.pack()
-        history.pop()
     
     except Exception as e:
         messagebox.showerror("Error", f"Failed to predict: {str(e)}")
