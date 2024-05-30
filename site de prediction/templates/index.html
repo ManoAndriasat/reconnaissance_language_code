@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Machine Learning Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            margin-top: 20px;
+        }
+        form {
+            margin: 20px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        label {
+            margin-bottom: 10px;
+        }
+        input[type="text"] {
+            padding: 10px;
+            margin-bottom: 10px;
+            width: 800px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result, #history {
+            width: 80%;
+            max-width: 800px;
+            margin: 20px 0;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        #result {
+            margin-bottom: 40px;
+        }
+        .history-entry {
+            background-color: #e9e9e9;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Machine Learning Prediction</h1>
+    <form id="predictionForm">
+        <label for="inputString">Enter Input String:</label>
+        <input type="text" id="inputString" name="input_string">
+        <button type="submit">Predict</button>
+    </form>
+    <div id="result"></div>
+    <h2>Prediction History</h2>
+    <div id="history"></div>
+    <script>
+        document.getElementById('predictionForm').onsubmit = async function (event) {
+            event.preventDefault();
+            const inputString = document.getElementById('inputString').value;
+            const response = await fetch('/predict', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: new URLSearchParams({'input_string': inputString})
+            });
+            const result = await response.json();
+            document.getElementById('result').innerText = JSON.stringify(result);
+            updateHistory();
+        };
+
+        async function updateHistory() {
+            const response = await fetch('/history');
+            const history = await response.json();
+            const historyDiv = document.getElementById('history');
+            historyDiv.innerHTML = '';
+            history.forEach(entry => {
+                const entryDiv = document.createElement('div');
+                entryDiv.classList.add('history-entry');
+                entryDiv.innerText = JSON.stringify(entry);
+                historyDiv.appendChild(entryDiv);
+            });
+        }
+
+        updateHistory();
+    </script>
+</body>
+</html>
